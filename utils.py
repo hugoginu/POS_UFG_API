@@ -90,7 +90,7 @@ def getXmlNFe(chaveNFe: str):
     if response.status_code == status.HTTP_200_OK or (response.text and response.text.strip):
         return response.text
     else:
-        return response.status_code
+        return 'ERROR_CODE: ' + str(response.status_code)
     
 # Formata as informações para o prompt
 def formatar_itens(itens: List[ItemNotaFiscal]) -> str:

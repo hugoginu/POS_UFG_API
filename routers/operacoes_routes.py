@@ -17,7 +17,7 @@ def consultaNfe(chaveNFe: str):
     response =  getXmlNFe(chaveNFe)
 
     # Verifica se a resposta é bem-sucedida
-    if response and response.strip:
+    if response and response.strip and not response.startswith('ERROR_CODE'):
         return xml_to_json(response)
     else:
-        return {"resultado": response.status_code}
+        return {"resultado": response}

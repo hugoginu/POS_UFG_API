@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 from utils import obter_logger_e_configuracao, getXmlNFe, formatar_itens, extrair_json
-from models import Vinculacao, VinculacaoReq, VinculacaoRet
+from models import Vinculacao, VinculacaoReq, VinculacaoRet, NomeGrupo
 from langchain_community.chat_models import ChatOpenAI
 import json
 
@@ -74,8 +74,10 @@ PROMPT_VINCULACAO = """
 
 router = APIRouter()
 
-@router.get("/v1/nfe/itens", 
-             summary="Extrai os Itens da NFe no formato do SPED")
+@router.post("/v1/nfe/itens", 
+             summary="Extrai os Itens da NFe no formato do SPED",
+             tags=[NomeGrupo.llm]
+            )
 def getItesNFe(chaveNFe: str):
     """
     Extrai informações dos itens de uma Nota Fiscal Eletrônica (NF-e) a partir de seu XML.
@@ -122,7 +124,9 @@ def getItesNFe(chaveNFe: str):
 
 @router.post("/v1/vinculacao", 
              response_model=VinculacaoRet,
-             summary="Vincula Itens da Nota Fiscal do SPED com os itens do XML da NFe")
+             summary="Vincula Itens da Nota Fiscal do SPED com os itens do XML da NFe",
+             tags=[NomeGrupo.llm]
+             )
 def analisar_vinculacao(req: VinculacaoReq):
     """
     Analisa a vinculação de itens entre EFD e XML de uma NFe.

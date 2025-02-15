@@ -1,5 +1,6 @@
 from pydantic import BaseModel, Field
 from typing import List
+from enum import Enum
 
 # Metódo da API para vinculação dos itens do SPED com os itens do XML 
 class ItemNotaFiscal(BaseModel):
@@ -56,3 +57,8 @@ class VinculacaoRet(BaseModel):
     """
     chv_nfe: str = Field(description="Chave da nota fiscal")
     itens_vinculados: List[Vinculacao] = Field(description="Lista de itens com a vinculação entre SPED e XML")
+
+class NomeGrupo(str, Enum):
+    consultas = "Consultas Básicas"
+    llm = 'Operações com IA'
+    

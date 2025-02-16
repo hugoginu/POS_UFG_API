@@ -23,7 +23,7 @@ v1/vinculacao/Request body:
 
 {
   "chv_nfe": "31240161365557000110550010009047751102632318",
-  "itens_efd": [    
+  "itens_efd": [
     {
       "seq": 1,
       "cod_item": "000001",
@@ -39,7 +39,7 @@ v1/vinculacao/Request body:
       "qt_item": 114,
       "valor_un": 292.95,
       "valor_total": 7030.8
-    }   
+    }
   ],
   "itens_xml": [
     {
@@ -57,6 +57,6 @@ v1/vinculacao/Request body:
       "qt_item": 24,
       "valor_un": 150.00,
       "valor_total": 3600.0
-    }	
+    }
   ]
 }

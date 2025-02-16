@@ -13,7 +13,8 @@ load_dotenv()
 
 API_TOKEN = os.getenv("API_TOKEN")
 openai.api_key = os.getenv("OPENAI_API_KEY")
-URL_API_MEUDANFE = 'https://ws.meudanfe.com/api/v1/get/nfe/xml/'
+URL_API_MEUDANFE = "https://ws.meudanfe.com/api/v1/get/nfe/xml/"
+
 
 def obter_logger_e_configuracao():
     """
@@ -28,7 +29,9 @@ def obter_logger_e_configuracao():
     logger = logging.getLogger("fastapi")
     return logger
 
+
 logger = obter_logger_e_configuracao()
+
 
 # Reutilização da autenticaçõa para todos os serviços da API
 def autenticacao(api_token: str):
@@ -43,8 +46,11 @@ def autenticacao(api_token: str):
 
     """
     if api_token != API_TOKEN:
-        logger.error('O Token informado ' + api_token + " é inválido!")
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Token inválido")
+        logger.error("O Token informado " + api_token + " é inválido!")
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED, detail="Token inválido"
+        )
+
 
 # Método para converter uma informação no formato XML para JSON
 def xml_to_json(xml_string):
@@ -62,16 +68,21 @@ def xml_to_json(xml_string):
         json_dict = xml_to_json(xml_string)
         # json_dict será {'root': {'child': 'valor'}}
     """
-    root = ET.fromstring(xml_string)    
+    root = ET.fromstring(xml_string)
+
     def parse_element(element):
         data = {}
-        tag = element.tag.split('}')[-1] 
+        tag = element.tag.split("}")[-1]
         if element.text and element.text.strip():
             data[tag] = element.text.strip()
         else:
-            data[tag] = {child.tag.split('}')[-1]: parse_element(child) for child in element}
+            data[tag] = {
+                child.tag.split("}")[-1]: parse_element(child) for child in element
+            }
         return data[tag]
+
     return parse_element(root)
+
 
 # realiza a chamada do serviço de pesquisa da NFe
 def getXmlNFe(chaveNFe: str):
@@ -85,13 +96,16 @@ def getXmlNFe(chaveNFe: str):
         str: O conteúdo do XML da NFe se a resposta for bem-sucedida.
         int: O código de status HTTP se a resposta não for bem-sucedida.
     """
-    response = requests.post(URL_API_MEUDANFE + chaveNFe, data={'empty'})
+    response = requests.post(URL_API_MEUDANFE + chaveNFe, data={"empty"})
     # Verifica se a resposta é bem-sucedida
-    if response.status_code == status.HTTP_200_OK or (response.text and response.text.strip):
+    if response.status_code == status.HTTP_200_OK or (
+        response.text and response.text.strip
+    ):
         return response.text
     else:
-        return 'ERROR_CODE: ' + str(response.status_code)
-    
+        return "Erro na Nota Fiscal informada! Confira o valor informado: " + chaveNFe
+
+
 # Formata as informações para o prompt
 def formatar_itens(itens: List[ItemNotaFiscal]) -> str:
     """
@@ -106,7 +120,11 @@ def formatar_itens(itens: List[ItemNotaFiscal]) -> str:
     Returns:
         str: String formatada contendo todos os itens da lista.
     """
-    return "\n".join(f"{item.seq}|{item.cod_item}|{item.desc_item}|{item.qt_item}|{item.valor_un}|{item.valor_total}" for item in itens)
+    return "\n".join(
+        f"{item.seq}|{item.cod_item}|{item.desc_item}|{item.qt_item}|{item.valor_un}|{item.valor_total}"
+        for item in itens
+    )
+
 
 # Remover textos retornados pela LLM fora do JSON
 def extrair_json(texto: str) -> str:
@@ -119,5 +137,5 @@ def extrair_json(texto: str) -> str:
     Returns:
         str: O objeto JSON extraído como uma string. Retorna uma string vazia se nenhum objeto JSON for encontrado.
     """
-    match = re.search(r'\{.*\}', texto, re.DOTALL)  # Captura tudo entre { e }
+    match = re.search(r"\{.*\}", texto, re.DOTALL)  # Captura tudo entre { e }
     return match.group(0) if match else ""  # Retorna apenas o conteúdo encontrado

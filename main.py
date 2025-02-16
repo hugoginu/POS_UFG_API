@@ -1,17 +1,3 @@
-"""
-Este módulo configura e inicializa a aplicação FastAPI para o projeto "Trabalho do Grupo 18".
-A aplicação inclui:
-- Título, resumo, descrição, versão, termos de serviço e informações de licença.
-- Dependência de autenticação para todas as rotas.
-- Inclusão de dois roteadores: `operacoes_routes` e `llm_router`.
-Autores:
-- Hugo Ginú
-- Pedro Moacir de Carvalho
-- Rafael Peixoto
-Licença:
-- Apache 2.0 (https://www.apache.org/licenses/LICENSE-2.0.html)
-"""
-
 from fastapi import FastAPI, Depends
 from utils import autenticacao
 from routers import llm_router, operacoes_routes
